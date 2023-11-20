@@ -15,16 +15,17 @@ func emptyUsers(t *testing.T, r *httptest.ResponseRecorder) {
 	assert.JSONEq(t, `[]`, r.Body.String())
 }
 
-func TestUser(t *testing.T) {
+func TestUsers(t *testing.T) {
 	p := test.NewPostgres(t, context.Background())
 	defer p.Close()
 
 	testData := []struct {
 		name       string
 		path       string
+		migrate    test.MigrateTest
 		assertions func(*testing.T, *httptest.ResponseRecorder)
 	}{
-		{name: "EmptyUsers", path: "/api/user", assertions: emptyUsers},
+		{name: "EmptyUsers", path: "/api/v1/users", assertions: emptyUsers},
 	}
 
 	test.Migrate(t, p.Url(), db.Migrations, nil)
@@ -33,7 +34,7 @@ func TestUser(t *testing.T) {
 		t.Run(data.name, func(t *testing.T) {
 			gin := test.NewGin(t, p.Url())
 
-			r, err := http.NewRequestWithContext(gin.Ctx, http.MethodGet, "/api/user", nil)
+			r, err := http.NewRequestWithContext(gin.Ctx, http.MethodGet, data.path, nil)
 			assert.Nil(t, err)
 			gin.Engine.ServeHTTP(gin.Recorder, r)
 			data.assertions(t, gin.Recorder)

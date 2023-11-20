@@ -11,6 +11,11 @@ import (
 	"testing"
 )
 
+type MigrateTest struct {
+	Migration embed.FS
+	Table     *string
+}
+
 func Migrate(t *testing.T, url string, migrations embed.FS, migrationTable *string) {
 	source, err := iofs.New(migrations, "migrations")
 	require.NoError(t, err)

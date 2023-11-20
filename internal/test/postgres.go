@@ -35,7 +35,7 @@ func NewPostgres(t *testing.T, ctx context.Context) *PostgresTestContainer {
 		},
 	}
 	container, err := postgres.RunContainer(ctx,
-		testcontainers.WithImage("docker.io/postgres:15"),
+		testcontainers.WithImage("docker.io/postgres:16"),
 		//postgres.WithInitScripts(filepath.Join("testdata", "init-user-db.sh")),
 		postgres.WithDatabase(pc.credential.dbname),
 		postgres.WithUsername(pc.credential.user),

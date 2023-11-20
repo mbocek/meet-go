@@ -48,10 +48,7 @@ func main() {
 		log.Fatal().Err(errDB).Msg("DB repo creation failed")
 	}
 
-	routes, errRoute := route.New(dbRepo)
-	if errRoute != nil {
-		log.Error().Err(errRoute).Msg("routes handler creation failed")
-	}
+	routes := route.New(dbRepo)
 	routes.RegisterHandlers(r)
 
 	if err := r.Run(); err != nil {
