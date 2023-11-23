@@ -2,7 +2,9 @@ package user_test
 
 import (
 	"context"
+	_ "embed"
 	"github.com/mbocek/meet-go/db"
+	fixtures "github.com/mbocek/meet-go/internal/route/user/fixtures"
 	"github.com/mbocek/meet-go/internal/test"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -10,10 +12,17 @@ import (
 	"testing"
 )
 
-func emptyUsers(t *testing.T, r *httptest.ResponseRecorder) {
+func oneUserAssertions(t *testing.T, r *httptest.ResponseRecorder) {
 	assert.Equal(t, http.StatusOK, r.Code)
-	assert.JSONEq(t, `[]`, r.Body.String())
+	assert.JSONEq(t, oneUser, r.Body.String())
 }
+
+var (
+	userMigrationTable = "user_migration"
+
+	//go:embed fixtures/test/one-user.json
+	oneUser string
+)
 
 func TestUsers(t *testing.T) {
 	p := test.NewPostgres(t, context.Background())
@@ -25,10 +34,11 @@ func TestUsers(t *testing.T) {
 		migrate    test.MigrateTest
 		assertions func(*testing.T, *httptest.ResponseRecorder)
 	}{
-		{name: "EmptyUsers", path: "/api/v1/users", assertions: emptyUsers},
+		{name: "One user", path: "/api/v1/users", assertions: oneUserAssertions},
 	}
 
 	test.Migrate(t, p.Url(), db.Migrations, nil)
+	test.Migrate(t, p.Url(), fixtures.UserMigration, &userMigrationTable)
 
 	for _, data := range testData {
 		t.Run(data.name, func(t *testing.T) {
