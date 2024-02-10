@@ -21,6 +21,18 @@ func ReturnNotFoundError(c *gin.Context, err error) {
 	c.JSON(http.StatusNotFound, ApiError{Error: err.Error()})
 }
 
+func ReturnAuthenticationError(c *gin.Context, err error) {
+	log := middleware.GetRequestLogger(c)
+	log.Error().Stack().Err(err).Int("httpStatusCode", http.StatusUnauthorized).Msg("not found")
+	c.JSON(http.StatusUnauthorized, ApiError{})
+}
+
+func ReturnBadRequestError(c *gin.Context, err error) {
+	log := middleware.GetRequestLogger(c)
+	log.Error().Stack().Err(err).Int("httpStatusCode", http.StatusBadRequest).Msg("bad request")
+	c.JSON(http.StatusBadRequest, ApiError{Error: err.Error()})
+}
+
 func ReturnInternalServerError(c *gin.Context, err error) {
 	log := middleware.GetRequestLogger(c)
 	log.Error().Stack().Err(err).Int("httpStatusCode", http.StatusInternalServerError).Msg("internal server error")

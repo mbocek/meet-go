@@ -1,1 +1,1 @@
-[{"Email":"test@email.com", "Id":1, "Name":"test", "Surname":"testsurname"}]
+[{"Email":"test@email.com", "Id":1, "Name":"test", "Surname":"testsurname", "PasswordHash": "", "SaltHash": ""}]

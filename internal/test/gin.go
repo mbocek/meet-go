@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mbocek/meet-go/internal/config"
 	"github.com/mbocek/meet-go/internal/repository/postgres"
-	"github.com/mbocek/meet-go/internal/route"
+	"github.com/mbocek/meet-go/internal/route/user"
 	"github.com/stretchr/testify/require"
 	"net/http/httptest"
 	"testing"
@@ -26,7 +26,7 @@ func NewGin(t *testing.T, dbURI string) *GinTestContext {
 	dbRepo, err := postgres.New(context.Background(), config.Postgres{Url: dbURI})
 	require.NoError(t, err)
 
-	routes := route.New(dbRepo)
+	routes := user.NewRoute(dbRepo)
 	routes.RegisterHandlers(r)
 
 	return &GinTestContext{

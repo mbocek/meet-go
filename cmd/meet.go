@@ -7,7 +7,7 @@ import (
 	"github.com/mbocek/meet-go/internal/config"
 	"github.com/mbocek/meet-go/internal/logger"
 	"github.com/mbocek/meet-go/internal/repository/postgres"
-	"github.com/mbocek/meet-go/internal/route"
+	"github.com/mbocek/meet-go/internal/route/user"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"os"
@@ -48,7 +48,7 @@ func main() {
 		log.Fatal().Err(errDB).Msg("DB repo creation failed")
 	}
 
-	routes := route.New(dbRepo)
+	routes := user.NewRoute(dbRepo)
 	routes.RegisterHandlers(r)
 
 	if err := r.Run(); err != nil {

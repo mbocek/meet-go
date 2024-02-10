@@ -1,19 +1,22 @@
-package route
+package user
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/mbocek/meet-go/internal/interfaces"
 	"github.com/mbocek/meet-go/internal/middleware"
-	"github.com/mbocek/meet-go/internal/route/user"
 )
 
 type RestService struct {
-	userController *user.Controller
+	userController *UserController
+	authController *AuthenticationController
 }
 
-func New(dbRepo interfaces.DBRepository) *RestService {
+func NewRoute(dbRepo interfaces.DBRepository) *RestService {
+	pwdService := NewPasswordService(3, 32, 64*1024, 2, 32)
+
 	return &RestService{
-		userController: user.New(dbRepo),
+		userController: NewUserController(dbRepo),
+		authController: NewAuthentication(dbRepo, pwdService),
 	}
 }
 
@@ -23,4 +26,5 @@ func (r *RestService) RegisterHandlers(e *gin.Engine) {
 	apiRoutes := e.Group("/api/v1")
 
 	apiRoutes.GET("/users", r.userController.GetAll)
+	apiRoutes.POST("/login", r.authController.Login)
 }
