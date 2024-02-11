@@ -2,16 +2,16 @@ version: "3.7"
 services:
   db:
     image: "postgres:15"
-    container_name: "postgres"
     ports:
       - "5432:5432"
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "password"
-      POSTGRES_DB: "meet"
+      POSTGRES_MULTIPLE_DATABASES: "meet_users, meet_tmp"
+    volumes:
+      - ${PWD}/sql/db-users.sql:/docker-entrypoint-initdb.d/db-init-users.sql
   pgAdmin:
     image: "dpage/pgadmin4"
-    container_name: "meet-pgadmin"
     environment:
       PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
       PGADMIN_DEFAULT_PASSWORD: "password123"
