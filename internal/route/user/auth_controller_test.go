@@ -31,7 +31,7 @@ func TestLogin(t *testing.T) {
 		request    string
 		assertions func(*testing.T, *httptest.ResponseRecorder)
 	}{
-		{name: "Login", path: "/api/v1/login", request: `{"name":"test", "password": "test"}`, assertions: loginAssertions},
+		{name: "Login", path: "/api/v1/signin", request: `{"name":"test", "password": "test"}`, assertions: loginAssertions},
 	}
 
 	test.Migrate(t, p.Url(), db.Migrations, nil)

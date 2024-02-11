@@ -18,12 +18,16 @@ func NewAuthentication(db interfaces.DBRepository, pwd *PasswordService) *Authen
 }
 
 func (a *AuthenticationController) Login(ctx *gin.Context) {
-	login := struct {
+	signin := struct {
 		Name     string
 		Password string
 	}{}
 
-	err := ctx.BindJSON(&login)
+	result := struct {
+		Status string `json:"status"`
+	}{}
+
+	err := ctx.BindJSON(&signin)
 	if err != nil {
 		error.ReturnBadRequestError(ctx, eris.Wrap(err, "cannot read body"))
 		return
@@ -31,8 +35,8 @@ func (a *AuthenticationController) Login(ctx *gin.Context) {
 
 	var user User
 
-	sql := `SELECT * FROM "user" where name = $1`
-	err = a.db.GetDb().Get(&user, sql, login.Name)
+	sql := `SELECT * FROM "user" where email = $1`
+	err = a.db.GetDb().Get(&user, sql, signin.Name)
 	if error.IsNoRowsFoundError(err) {
 		error.ReturnAuthenticationError(ctx, eris.New("user doesn't exists"))
 		return
@@ -40,10 +44,11 @@ func (a *AuthenticationController) Login(ctx *gin.Context) {
 		error.ReturnInternalServerError(ctx, eris.Wrap(err, "cannot select users"))
 		return
 	}
-	err = a.pwd.Compare(user.PasswordHash, user.SaltHash, login.Password)
+	err = a.pwd.Compare(user.PasswordHash, user.SaltHash, signin.Password)
 	if err != nil {
 		error.ReturnAuthenticationError(ctx, eris.Wrap(err, "invalid password"))
 		return
 	}
-	ctx.JSON(http.StatusOK, nil)
+	result.Status = "success"
+	ctx.JSON(http.StatusOK, result)
 }
