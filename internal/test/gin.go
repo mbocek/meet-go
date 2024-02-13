@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/jmoiron/sqlx"
 	"github.com/mbocek/meet-go/internal/config"
 	"github.com/mbocek/meet-go/internal/repository/postgres"
 	"github.com/mbocek/meet-go/internal/route/user"
@@ -16,6 +17,7 @@ type GinTestContext struct {
 	Ctx      *gin.Context
 	Engine   *gin.Engine
 	Recorder *httptest.ResponseRecorder
+	DB       *sqlx.DB
 }
 
 func NewGin(t *testing.T, dbURI string) *GinTestContext {
@@ -34,5 +36,6 @@ func NewGin(t *testing.T, dbURI string) *GinTestContext {
 		Ctx:      ctx,
 		Engine:   r,
 		Recorder: w,
+		DB:       dbRepo.GetDb(),
 	}
 }

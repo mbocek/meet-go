@@ -16,6 +16,7 @@ type User struct {
 	Email        string `db:"email"`
 	PasswordHash string `db:"password_hash"`
 	SaltHash     string `db:"salt_hash"`
+	Enabled      bool   `db:"enabled"`
 }
 
 type UserController struct {

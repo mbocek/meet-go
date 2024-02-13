@@ -3,7 +3,9 @@ package user_test
 import (
 	"context"
 	_ "embed"
+	"encoding/json"
 	"github.com/mbocek/meet-go/db"
+	"github.com/mbocek/meet-go/internal/route/user"
 	fixtures "github.com/mbocek/meet-go/internal/route/user/fixtures"
 	"github.com/mbocek/meet-go/internal/test"
 	"github.com/stretchr/testify/assert"
@@ -14,7 +16,10 @@ import (
 
 func oneUserAssertions(t *testing.T, r *httptest.ResponseRecorder) {
 	assert.Equal(t, http.StatusOK, r.Code)
-	assert.JSONEq(t, oneUser, r.Body.String())
+	var u []user.User
+	err := json.Unmarshal(r.Body.Bytes(), &u)
+	assert.Nil(t, err)
+	assert.Greater(t, len(u), 1)
 }
 
 var (

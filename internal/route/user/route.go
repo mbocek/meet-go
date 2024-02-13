@@ -28,5 +28,6 @@ func (r *RestService) RegisterHandlers(e *gin.Engine) {
 	apiRoutes := e.Group("/api/v1")
 
 	apiRoutes.GET("/users", r.userController.GetAll)
-	apiRoutes.POST("/signin", r.authController.Login)
+	apiRoutes.POST("/auth/signin", r.authController.Signin)
+	apiRoutes.POST("/auth/signup", r.authController.Signup)
 }
