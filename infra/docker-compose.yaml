@@ -10,7 +10,7 @@ services:
       POSTGRES_MULTIPLE_DATABASES: "meet_users, meet_tmp"
     volumes:
       - ${PWD}/sql/db-users.sql:/docker-entrypoint-initdb.d/db-init-users.sql
-  pgAdmin:
+  pg-admin:
     image: "dpage/pgadmin4:8"
     environment:
       PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
@@ -25,5 +25,16 @@ services:
       - pgadmin-data:/var/lib/pgadmin
       - ${PWD}/servers.json:/pgadmin4/servers.json
       - ${PWD}/pgpass:/pgpass
+  fake-smtp-server:
+    image: gessnerfl/fake-smtp-server:2.2.0
+    hostname: "fake-smtp-server"
+    restart: always
+    environment:
+      - FAKESMTP_AUTHENTICATION_USERNAME=myuser
+      - FAKESMTP_AUTHENTICATION_PASSWORD=mysecretpassword
+    ports:
+      - "9025:8025"      #expose smtp port
+      - "9080:8080"      #expose web ui
+      - "9081:8081"
 volumes:
   pgadmin-data:

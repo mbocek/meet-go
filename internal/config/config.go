@@ -11,8 +11,18 @@ type Postgres struct {
 	Url string `mapstructure:"url"`
 }
 
+type SMTP struct {
+	Host            string `mapstructure:"host"`
+	Port            string `mapstructure:"port"`
+	From            string `mapstructure:"from"`
+	User            string `mapstructure:"user"`
+	Password        string `mapstructure:"password"`
+	ConfirmTemplate string `mapstructure:"confirm-template"`
+}
+
 type Config struct {
 	Postgres Postgres `mapstructure:"postgres"`
+	SMTP     SMTP     `mapstructure:"smtp"`
 }
 
 func ReadConfigFile() Config {
